@@ -16,7 +16,6 @@ if not os.path.exists(p):
         nltk.download("stopwords")
         nltk.download('wordnet')
 
-from tkinter import *
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 import pickle
@@ -50,12 +49,14 @@ class Biblio:
         self.noting = 0
         self.accepted_order = [k for k in range(6)]
         self.window = window
+        BG_COLOR = '#96CDCD'
+        common_height = 24
 
-        self.var = IntVar()
+        self.var = tk.IntVar()
 
-        self.merge_var = IntVar()
+        self.merge_var = tk.IntVar()
 
-        self.save_var = IntVar()
+        self.save_var = tk.IntVar()
         
         self.mothermenu = tk.Frame(window, bg=BG_COLOR)
         self.mothermenu.grid(row=0, column=0, sticky=tk.W + tk.E)
@@ -65,7 +66,7 @@ class Biblio:
             text='Locate Zotero',
             height=1,
             width=10,
-            command=self.locate_zotero).grid(row=0, column=0, sticky=tk.W)
+            command=self.locate_zotero).grid(row=0, column=0, padx=10, sticky=tk.W)
         
         self.zotero_path = tk.StringVar()
         self.zotero_path.set(
@@ -77,45 +78,14 @@ class Biblio:
         display1 = tk.Frame(window, bg=BG_COLOR)
         display1.grid(row=1, column=0)
 
-        display1arrow = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1arrow.grid(row=0, column=0)
-
-        tk.Button(
-            display1arrow,
-            text='^',
-            height=1,
-            width=3,
-            command=self.move_up_plan).grid(row=0, column=1)
-
-        tk.Button(
-            display1arrow,
-            text='v',
-            height=1,
-            width=3,
-            command=self.move_down_plan).grid(row=2, column=1)
-
-        tk.Button(
-            display1arrow,
-            text='<',
-            height=1,
-            width=3,
-            command=self.move_left_plan).grid(row=1, column=0)
-
-        tk.Button(
-            display1arrow,
-            text='>',
-            height=1,
-            width=3,
-            command=self.move_right_plan).grid(row=1, column=2)
-
         display1plan = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1plan.grid(row=0, column=1, sticky=tk.W + tk.E)
 
-        self.plan_listbox = Listbox(
+        self.plan_listbox = tk.Listbox(
             display1plan,
-            height=30,
-            width=50,
-            selectmode=EXTENDED)
+            height=common_height,
+            width=60,
+            selectmode=tk.EXTENDED)
         self.plan_listbox.grid(row=0, column=0)
         new = self.build_plan()
         for k in range(len(new)):
@@ -125,34 +95,66 @@ class Biblio:
         display1planmenu = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1planmenu.grid(row=1, column=1, sticky=tk.W + tk.E)
 
+        display1arrow = tk.Frame(display1planmenu, bg=BG_COLOR, bd=10)
+        display1arrow.grid(row=0, column=0)
+
+        tk.Button(
+            display1arrow,
+            text='^',
+            height=1,
+            width=2,
+            command=self.move_up_plan).grid(row=0, column=1)
+
+        tk.Button(
+            display1arrow,
+            text='v',
+            height=1,
+            width=2,
+            command=self.move_down_plan).grid(row=2, column=1)
+
+        tk.Button(
+            display1arrow,
+            text='<',
+            height=1,
+            width=2,
+            command=self.move_left_plan).grid(row=1, column=0, padx=5)
+
+        tk.Button(
+            display1arrow,
+            text='>',
+            height=1,
+            width=2,
+            command=self.move_right_plan).grid(row=1, column=2, padx=5)
+
         display1planmenu1 = tk.Frame(display1planmenu, bg=BG_COLOR)
-        display1planmenu1.grid(row=0, column=0)
+        display1planmenu1.grid(row=0, column=1)
         tk.Button(
             display1planmenu1,
             text='Add here',
             height=1,
             width=7,
-            command=self.add_plan).grid(row=0, column=0)
+            command=self.add_plan).grid(row=0, column=0, pady=5)
 
         display1planmenu11 = tk.Frame(
             display1planmenu1)
-        display1planmenu11.grid()
-        tk.Button(
-            display1planmenu11,
-            text='-> add lower',
-            height=1,
-            width=11,
-            command=self.add_plan_low).grid(row=1, column=0)
+        display1planmenu11.grid(padx=5)
 
         tk.Button(
             display1planmenu11,
             text='add upper <-',
             height=1,
             width=11,
-            command=self.add_plan_high).grid(row=1, column=1)
+            command=self.add_plan_high).grid(row=1, column=0)
+
+        tk.Button(
+            display1planmenu11,
+            text='-> add lower',
+            height=1,
+            width=11,
+            command=self.add_plan_low).grid(row=1, column=1)
             
         display1planmenu2 = tk.Frame(display1planmenu)
-        display1planmenu2.grid(row=0, column=1)
+        display1planmenu2.grid(row=0, column=2)
         
         tk.Button(
             display1planmenu2,
@@ -171,63 +173,62 @@ class Biblio:
         display1source = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1source.grid(row=0, column=2)
 
-        self.source_listbox = Listbox(
+        self.source_listbox = tk.Listbox(
             display1source,
-            height=30,
+            height=common_height,
             width=20,
-            selectmode=EXTENDED)
+            selectmode=tk.EXTENDED)
         self.source_listbox.grid(row=0, column=0)
         for k in unique(self.blocs["source"]):
-            self.source_listbox.insert(END, k[0])
+            self.source_listbox.insert(tk.END, k[0])
         self.source_listbox.bind('<<ListboxSelect>>', self.blocs_filter_sources)
 
         display1sourcemenu = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1sourcemenu.grid(row=1, column=2)
 
-        importzoterohighlight = tk.Frame(
-            display1sourcemenu, bg='red', bd=1)
-        importzoterohighlight.grid(row=0, column=0, sticky=tk.W + tk.E)
-        tk.Button(
-            importzoterohighlight,
-            text='Import Zot',
-            height=1,
-            width=9,
-            command=self.add_to_blocs).grid(row=0, column=0, sticky=tk.W + tk.E)
-            
         tk.Button(
             display1sourcemenu,
             text='Info',
             height=1,
             width=9,
-            command=self.send_key).grid(row=0, column=1, sticky=tk.W + tk.E)
+            command=self.send_key).grid(row=0, column=0, sticky=tk.W + tk.E)
 
         tk.Button(
             display1sourcemenu,
             text='Remove',
             height=1,
             width=7,
-            command=self.delete_article).grid(row=1, column=0, sticky=tk.W + tk.E)
+            command=self.delete_article).grid(row=2, column=0, sticky=tk.W + tk.E)
+
+        tk.Button(
+            display1sourcemenu,
+            text='Import Zot',
+            bg='#CDC9A5',
+            height=1,
+            width=9,
+            command=self.add_to_blocs).grid(row=1, column=0, pady=5, sticky=tk.W + tk.E)
 
         display1blocs = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1blocs.grid(row=0, column=3)
 
-        self.blocs_listbox = Listbox(
+        self.blocs_listbox = tk.Listbox(
             display1blocs,
-            height=30,
+            height=common_height,
             width=60,
-            selectmode=EXTENDED)
+            selectmode=tk.EXTENDED)
         self.blocs_listbox.grid(row=0, column=0)
         self.blocs_listbox.bind('<<ListboxSelect>>', self.read_blocs)
 
         display1blocsoptions = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1blocsoptions.grid(row=1, column=3)
 
-        tk.Button(
+        self.tag_but = tk.Button(
             display1blocsoptions,
             text='Tagging',
             height=1,
             width=10,
-            command=self.tag_blocs).grid(row=0, column=0)
+            command=self.tag_blocs)
+        self.tag_but.grid(row=0, column=0)
 
         tk.Checkbutton(
             display1blocsoptions,
@@ -238,36 +239,36 @@ class Biblio:
         display1shell = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1shell.grid(row=0, column=4, sticky=tk.N + tk.S)
 
-        self.shell_label = Label(display1shell, text="Shell :", bg=BG_COLOR)
+        self.shell_label = tk.Label(display1shell, text="Shell :", bg=BG_COLOR)
         self.shell_label.grid(row=0, column=0, sticky=tk.W)
 
-        self.shell_text = Text(
+        self.shell_text = tk.Text(
             display1shell,
-            #height=23,
+            height=common_height-5,
             width=60,
             exportselection=False,
-            wrap=WORD,
+            wrap=tk.WORD,
             font=('Calibri', 12))
         self.shell_text.grid(row=1, column=0, sticky=tk.S)
 
         display1shelloptions = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1shelloptions.grid(row=1, column=4, sticky=tk.W)
 
-        self.search_text = Text(
+        self.search_text = tk.Text(
             display1shelloptions,
             height=1,
             width=40)
-        self.search_text.grid(row=0, column=0)
+        self.search_text.grid(row=0, column=0, padx=10)
 
-        self.search_but = Button(
+        self.search_but = tk.Button(
             display1shelloptions,
             text='Search',
             height=1,
             width=7,
             command=self.blocs_filter_search)
-        self.search_but.grid(row=0, column=1, sticky=tk.E)
+        self.search_but.grid(row=0, column=1, padx=5, sticky=tk.E)
 
-        self.topics_but = Button(
+        self.topics_but = tk.Button(
             display1shelloptions,
             text='Topics',
             height=1,
@@ -281,11 +282,11 @@ class Biblio:
         display2note = tk.Frame(display2, bg=BG_COLOR, bd=10)
         display2note.grid(row=0, column=0, sticky=tk.W)
 
-        self.notes_text = Text(
+        self.notes_text = tk.Text(
             display2note,
             height=11,
             width=150,
-            wrap=WORD,
+            wrap=tk.WORD,
             font=('Calibri',12))
         self.notes_text.grid(row=0, column=0)
 
@@ -300,31 +301,31 @@ class Biblio:
             command=self.edit_notes_from_plan)
         self.take_note_but.grid(row=0, column=0)
 
-        self.ref_but = Button(
+        self.ref_but = tk.Button(
             display2menu,
             text='Link Ref',
             height=1,
             width=10,
             command=self.insert_ref)
-        self.ref_but.grid(row=1, column=0)
+        self.ref_but.grid(row=1, column=0, pady=5)
 
-        self.save_note_but = Button(
+        self.save_note_but = tk.Button(
             display2menu,
             text='Save',
             height=1,
             width=10,
             command=lambda: self.save_var.set(1))
-        self.save_note_but.grid(row=2, column=0)
+        self.save_note_but.grid(row=2, column=0, padx=10)
 
-        self.export_but = Button(
+        self.export_but = tk.Button(
             display2menu,
             text='Export all',
             height=1,
             width=10,
             command=self.export_all)
-        self.export_but.grid(row=3, column=1)
+        self.export_but.grid(row=3, column=1, pady=5)
 
-        self.backup_but = Button(
+        self.backup_but = tk.Button(
             display2menu,
             text='Backup',
             height=1,
@@ -359,8 +360,10 @@ class Biblio:
                     ['1. ', '2. ', '3. ', '4. ', '5. ', '6. ', '7. ', '8. ', '9. ', '10. '],
                     ['a. ', 'b. ', 'c. ', 'd. ', 'e. ', 'f. ', 'g. ', 'h. ', 'i. ', 'j. '],
                     ['i. ', 'ii. ', 'iii. ', 'iv. ', 'v. ', 'vi. ', 'vii. ', 'viii. ', 'ix. ', 'x. '],
-                    ['->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ']]
-        ct = [0, 0, 0, 0, 0, 0]
+                    ['->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. ', '->. '],
+                    ['o. ', 'o. ', 'o. ', 'o. ', 'o. ', 'o. ', 'o. ', 'o. ', 'o. ', 'o. '],
+                    ['<>. ', '<>. ', '<>. ', '<>. ', '<>. ', '<>. ', '<>. ', '<>. ', '<>. ', '<>. ']]
+        ct = [0, 0, 0, 0, 0, 0, 0, 0]
         built_plan = ['' for k in range(len(self.plan["position"]))]
         
         for p in range(len(self.plan["position"])):
@@ -385,7 +388,7 @@ class Biblio:
                 if j == self.plan["position"][k] and self.plan["order"][k] != 0:
                     self.plan["order"][k] -= 1
 
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -398,10 +401,10 @@ class Biblio:
         pos = self.plan_listbox.curselection()
         for j in pos:
             for k in range(len(self.plan["position"])):
-                if j == self.plan["position"][k] and self.plan["order"][k] != 5:
+                if j == self.plan["position"][k] and self.plan["order"][k] != 7:
                     self.plan["order"][k] += 1
 
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -423,7 +426,7 @@ class Biblio:
             self.plan["position"][target] = self.plan["position"][current]
             self.plan["position"][current] = tp
 
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -448,7 +451,7 @@ class Biblio:
             self.plan["position"][target] = self.plan["position"][current]
             self.plan["position"][current] = tp
 
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -470,7 +473,7 @@ class Biblio:
             current_order = self.plan["order"][self.plan["position"].index(pos[0])]
         # Get plan tag name
         self.shell_text.delete("1.0", "end-1c")
-        self.shell_label.configure(text='New category? :')
+        self.shell_label.configure(text='[press ENTER] New category? :')
         self.window.bind('<Key>', self.next_press)
         self.window.wait_variable(self.var)
         self.window.unbind('<Key>')
@@ -506,7 +509,7 @@ class Biblio:
                 self.save_dict(self.p, 'plan', self.plan)
                 self.plan = self.import_dict(self.p, 'plan')
 
-                self.plan_listbox.delete(0, END)
+                self.plan_listbox.delete(0, tk.END)
                 new = self.build_plan()
                 for k in range(len(new)):
                     self.plan_listbox.insert(k, new[k])
@@ -549,7 +552,7 @@ class Biblio:
         self.save_dict(self.p, 'plan', self.plan)
         self.plan = self.import_dict(self.p, 'plan')
 
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -559,8 +562,8 @@ class Biblio:
         # Ask user input
         self.shell_text.delete("1.0", "end-1c")
         old = self.plan_listbox.get(pos)
-        self.shell_text.insert(END, old[old.index('. ')+2:])
-        self.shell_label.configure(text='Change name to :')
+        self.shell_text.insert(tk.END, old[old.index('. ')+2:])
+        self.shell_label.configure(text='[press ENTER] Change name to :')
 
         self.window.bind('<Key>', self.next_press)
         self.window.wait_variable(self.var)
@@ -579,7 +582,7 @@ class Biblio:
                     self.blocs["tag"][k][j][0] = new_name
 
         self.tag_list = self.build_tag_list(self.blocs)
-        self.plan_listbox.delete(0, END)
+        self.plan_listbox.delete(0, tk.END)
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
@@ -613,7 +616,7 @@ class Biblio:
         self.noting = 0
 
     def insert_ref(self):
-        cursor = self.notes_text.index(INSERT)
+        cursor = self.notes_text.index(tk.INSERT)
         sources = "("
         selected = self.source_listbox.curselection()
         for k in selected:
@@ -678,9 +681,9 @@ class Biblio:
         self.save_dict(self.p, 'blocs', self.blocs)
         self.blocs = self.import_dict(self.p, 'blocs')
 
-        self.source_listbox.delete(0, END)
+        self.source_listbox.delete(0, tk.END)
         for k in unique(self.blocs["source"]):
-            self.source_listbox.insert(END, k[0])
+            self.source_listbox.insert(tk.END, k[0])
 
     def delete_article(self):
         pos = self.source_listbox.curselection()[0]
@@ -698,9 +701,9 @@ class Biblio:
             self.save_dict(self.p, 'blocs', self.blocs)
             self.blocs = self.import_dict(self.p, 'blocs')
 
-            self.source_listbox.delete(0, END)
+            self.source_listbox.delete(0, tk.END)
             for k in unique(self.blocs["source"]):
-                self.source_listbox.insert(END, k[0])
+                self.source_listbox.insert(tk.END, k[0])
 
     def tag_blocs(self):
         self.tagging = 1
@@ -717,9 +720,9 @@ class Biblio:
                 # Show text in shell
                 self.shell_text.delete('1.0', "end-1c")
                 self.blocs_listbox.itemconfig(current[k], bg='green')
-                self.plan_listbox.selection_clear(0, END)
+                self.plan_listbox.selection_clear(0, tk.END)
                 add_tag = self.blocs["text"].index(selected[k])
-                self.shell_text.insert(END, self.blocs["text"][add_tag])
+                self.shell_text.insert(tk.END, self.blocs["text"][add_tag])
                 # Show existing tags
                 # Reset colors
                 for p in self.plan["position"]:
@@ -733,6 +736,7 @@ class Biblio:
                                     self.plan_listbox.select_set(self.plan["position"][m])
                                     # switch to select set
                 # Wait for button press
+                self.shell_label.configure(text='[press ENTER to confirm]')
                 self.window.bind('<Key>', self.next_press)
                 self.window.wait_variable(self.var)
                 self.window.unbind('<Key>')
@@ -773,9 +777,9 @@ class Biblio:
 
                 if k < len(selected) - 1:
                     next = self.blocs["text"].index(selected[k + 1])
-                    self.shell_text.insert(END, self.blocs["text"][add_tag] + '\n\nNext : \n\n' + self.blocs["text"][next])
+                    self.shell_text.insert(tk.END, self.blocs["text"][add_tag] + '\n\nNext : \n\n' + self.blocs["text"][next])
                 else:
-                    self.shell_text.insert(END, self.blocs["text"][add_tag])
+                    self.shell_text.insert(tk.END, self.blocs["text"][add_tag])
                 
                 self.merge_var.set(0)
 
@@ -791,6 +795,7 @@ class Biblio:
                                 if i[1] == self.plan["ID"][m]:
                                     self.plan_listbox.itemconfig(self.plan["position"][m], bg='green')
                 # Wait for button press
+                self.shell_label.configure(text='[press ENTER for next]')
                 self.window.bind('<Key>', self.next_press)
                 self.window.wait_variable(self.var)
                 self.window.unbind('<Key>')
@@ -836,6 +841,7 @@ class Biblio:
         self.save_dict(self.p, 'plan', self.plan)
         self.plan = self.import_dict(self.p, 'plan')
 
+        self.shell_label.configure(text='Shell :')
         self.tagging = 0
         self.tag_but.config(bg = '#f0f0f0')
 
@@ -880,17 +886,17 @@ class Biblio:
                                 sources += [self.blocs["source"][k]]
                 sources = unique(sources)
 
-                self.blocs_listbox.delete(0, END)
+                self.blocs_listbox.delete(0, tk.END)
                 for k in [unique(self.blocs["source"]).index(l) for l in self.blocs["source"]]:
                     self.source_listbox.itemconfig(k, bg="white")
                 for k in selected:
-                    self.blocs_listbox.insert(END, k)
+                    self.blocs_listbox.insert(tk.END, k)
                 for k in sources:
                     index = self.source_listbox.get(0, "end").index(k[0])
                     self.source_listbox.itemconfig(index, bg='green')
                 
                 if self.noting == 0:
-                    self.notes_text.insert(END, self.plan["note"][pos] + '\n----\n')
+                    self.notes_text.insert(tk.END, self.plan["note"][pos] + '\n----\n')
 
     def blocs_filter_sources(self, event):
         pos = self.source_listbox.curselection()[0]
@@ -899,16 +905,16 @@ class Biblio:
             if self.blocs["source"][k][0] == self.source_listbox.get(pos):
                 selected += [self.blocs["text"][k]]
 
-        self.blocs_listbox.delete(0, END)
+        self.blocs_listbox.delete(0, tk.END)
         for k in selected:
-            self.blocs_listbox.insert(END, k)
+            self.blocs_listbox.insert(tk.END, k)
 
     def blocs_filter_search(self):
-        self.blocs_listbox.delete(0, END)
+        self.blocs_listbox.delete(0, tk.END)
         request = self.search_text.get("1.0", "end-1c")
         for k in self.blocs["text"]:
             if request.lower() in k.lower():
-                self.blocs_listbox.insert(END, k)
+                self.blocs_listbox.insert(tk.END, k)
 
     def blocs_main_subjects(self):
         tensors = []
@@ -952,15 +958,15 @@ class Biblio:
             for word in words:
                 if word.casefold() not in stop_words:
                     filtered_words.append(lemmatizer.lemmatize(word))
-            self.shell_text.insert(END, "Group " + str(k) + " :\n")
+            self.shell_text.insert(tk.END, "Group " + str(k) + " :\n")
             for k in nltk.FreqDist(filtered_words).most_common(2):
-                self.shell_text.insert(END, str(k)+"\n")
+                self.shell_text.insert(tk.END, str(k)+"\n")
 
             # Study bi-collocation information
             bigram_measures = nltk.collocations.BigramAssocMeasures()
             finder = nltk.collocations.BigramCollocationFinder.from_words(filtered_words)
             for k in finder.nbest(bigram_measures.likelihood_ratio, 2):
-                self.shell_text.insert(END, str(k) + "\n")
+                self.shell_text.insert(tk.END, str(k) + "\n")
 
     def read_blocs(self, event):
         if self.tagging == 0:
@@ -974,7 +980,7 @@ class Biblio:
 
             for i in self.blocs_listbox.curselection():
                 # Display in shell
-                self.shell_text.insert(END, self.blocs_listbox.get(i))
+                self.shell_text.insert(tk.END, self.blocs_listbox.get(i))
 
                 # Show corresponding tags and sources
                 for j in range(len(self.blocs["text"])):
@@ -988,7 +994,7 @@ class Biblio:
                                     if self.plan_listbox.itemcget(self.plan["position"][m], "bg") != '#CDC9A5':
                                         self.plan_listbox.itemconfig(self.plan["position"][m], bg='green')
 
-                self.shell_text.insert(END, '\n----\n')
+                self.shell_text.insert(tk.END, '\n----\n')
 
     def send_key(self):
         pos = self.source_listbox.curselection()[0]
@@ -1009,7 +1015,7 @@ class Biblio:
             pickle.dump(d, f)
         
         self.zotero = self.import_dict(self.p, 'Zotero_data')
-        self.zotero_path.set(self.zotero['path'] if self.zotero else 'Not yet connected to Zotero.')
+        self.zotero_path.set(self.zotero['path'] if self.zotero else 'Not yet connected to Zotero ( Usually : "C:\\Users\\<your_name>\\Zotero" )')
         return
 
     def zotero_import(self):
@@ -1158,7 +1164,7 @@ class Biblio:
 
 class ArticleInfo:
     def __init__(self, key, zotero):
-        win2 = Tk()
+        win2 = tk.Tk()
         win2.title('Article metadata')
         win2.geometry("600x400")
         my_label = HTMLLabel(win2, height=20, width=70, html=self.get_meta(key, zotero))
@@ -1239,17 +1245,7 @@ def init_dict():
 
         with open(p + "\\Zotero_data.pkl", 'wb') as f:
             pickle.dump({}, f)
-        """
-        print('No Zotero folder found')
-        dialog = Tk()
-        dialog.withdraw()
-        path = askdirectory(parent=dialog, title='Select Zotero folder location')
-        dialog.destroy()
-        target_collection = input("Enter the parent Zotero collection you are working with : ")
-        d = dict(path=path, target_collection=target_collection)
-        with open(p + "\\Zotero_data.pkl", 'wb') as f:
-            pickle.dump(d, f)
-        """
+
     if not os.path.exists(cwd + "\\docx"):
         os.makedirs(cwd + "\\docx")
     if not os.path.exists(cwd + "\\Backup"):
@@ -1288,7 +1284,7 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 BG_COLOR = '#96CDCD'
 
 init_dict()
-win = Tk()
+win = tk.Tk()
 win.title('Multi Tag Biblio')
 win.state('zoomed')
 win.configure(bg=BG_COLOR, bd=10)
