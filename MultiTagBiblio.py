@@ -5,7 +5,7 @@ import subprocess
 cwd = os.getcwd()
 p = cwd + "\\Storage"
 # Check whether the specified path exists or not
-dependencies = ['tk', 'tkhtmlview', 'nltk', 'sentence_transformers', 'matplotlib', 'scipy', 'scikit-learn', 'python-docx', 'datetime', 'pywin32']
+dependencies = ['tk', 'tkhtmlview', 'python-docx', 'datetime', 'pywin32']
 if not os.path.exists(p):
     setup = input("First time use, install dependancies? (y/n) :")
     if setup == 'y':
@@ -21,11 +21,6 @@ from tkinter.filedialog import askdirectory
 import pickle
 import sqlite3
 from tkhtmlview import HTMLLabel
-import nltk
-from sentence_transformers import SentenceTransformer, util
-import matplotlib.pyplot as plt
-from scipy.cluster.hierarchy import dendrogram, linkage
-from sklearn.cluster import AgglomerativeClustering
 import docx
 from datetime import datetime
 import shutil
@@ -51,7 +46,7 @@ class Biblio:
         self.window = window
         BG_COLOR = '#96CDCD'
         common_height = 24
-
+        print("plan creation etc")
         self.var = tk.IntVar()
 
         self.merge_var = tk.IntVar()
@@ -267,14 +262,6 @@ class Biblio:
             width=7,
             command=self.blocs_filter_search)
         self.search_but.grid(row=0, column=1, padx=5, sticky=tk.E)
-
-        self.topics_but = tk.Button(
-            display1shelloptions,
-            text='Topics',
-            height=1,
-            width=7,
-            command=self.blocs_main_subjects)
-        self.topics_but.grid(row=0, column=2, sticky=tk.E)
         
         display2 = tk.Frame(window, bg=BG_COLOR)
         display2.grid(row=2, column=0, sticky=tk.W + tk.E)
@@ -332,7 +319,7 @@ class Biblio:
             width=10,
             command=self.backup)
         self.backup_but.grid(row=4, column=1)
-
+        print("widget")
     # Dictionary management
 
     def import_dict(self, path, name):
@@ -916,58 +903,6 @@ class Biblio:
             if request.lower() in k.lower():
                 self.blocs_listbox.insert(tk.END, k)
 
-    def blocs_main_subjects(self):
-        tensors = []
-        # load pre-trained model
-        model = SentenceTransformer('all-MiniLM-L6-v2')
-        for k in self.blocs["text"]:
-            if k != 'default':
-                selected = model.encode(k)
-                compare = model.encode(self.blocs["text"])
-                cos_sim = util.cos_sim(selected, compare)
-                tensors += [cos_sim.tolist()[0]]
-
-        # Classifying vectorial products for each bloc
-        linkage_data = linkage(tensors, method='ward', metric='euclidean')
-        dendrogram(linkage_data)
-
-        self.shell_text.delete('1.0', "end-1c")
-        self.shell_label.configure(text='Number of clusters? :')
-        plt.show()
-        self.window.bind('<Key>', self.next_press)
-        self.window.wait_variable(self.var)
-        self.window.unbind('<Key>')
-        nb_clusters = int(self.shell_text.get("1.0", "end-1c"))
-
-        hierarchical_cluster = AgglomerativeClustering(n_clusters=nb_clusters, affinity='euclidean', linkage='ward')
-        labels = hierarchical_cluster.fit_predict(tensors)
-        groups = ['' for k in unique(labels)]
-
-        for k in range(len(self.blocs["text"])-1):
-            groups[labels[k]] += self.blocs["text"][k+1]
-
-        self.shell_text.delete('1.0', "end-1c")
-        for k in range(len(groups)):
-            # Frequent keywords and word combinations in blocs
-            words = nltk.tokenize.word_tokenize(groups[k])
-            stop_words = set(nltk.corpus.stopwords.words("english"))
-            stop_words.update(',', '.', '(', ')', '[', ']', 'Figure')
-            filtered_words = []
-            # Filter words and set to their lemma
-            lemmatizer = nltk.stem.WordNetLemmatizer()
-            for word in words:
-                if word.casefold() not in stop_words:
-                    filtered_words.append(lemmatizer.lemmatize(word))
-            self.shell_text.insert(tk.END, "Group " + str(k) + " :\n")
-            for k in nltk.FreqDist(filtered_words).most_common(2):
-                self.shell_text.insert(tk.END, str(k)+"\n")
-
-            # Study bi-collocation information
-            bigram_measures = nltk.collocations.BigramAssocMeasures()
-            finder = nltk.collocations.BigramCollocationFinder.from_words(filtered_words)
-            for k in finder.nbest(bigram_measures.likelihood_ratio, 2):
-                self.shell_text.insert(tk.END, str(k) + "\n")
-
     def read_blocs(self, event):
         if self.tagging == 0:
             # Reset widgets
@@ -1125,7 +1060,7 @@ class Biblio:
             for m in range(len(self.plan["ID"])):
                 if self.tag_list[k][1] == self.plan["ID"][m]:
                     sources = []
-                    # Skip the firt 'default' source
+                    # Skip the first 'default' source
                     for n in range(1, len(self.blocs["text"])):
                         for o in range(len(self.blocs["tag"][n])):
                             if len(self.blocs["tag"][n][o]) > 0:
@@ -1136,7 +1071,6 @@ class Biblio:
                         printed_sources += p + " ; "
                     headers[self.plan["position"][m]] = [self.tag_list[k][0], self.plan["order"][m], self.plan["note"][m], printed_sources[:-3]]
 
-        
         for k in headers:
             if k != []:
                 doc.add_heading(k[0], level=k[1]+1)
