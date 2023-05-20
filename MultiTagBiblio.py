@@ -46,7 +46,7 @@ class Biblio:
         self.window = window
         BG_COLOR = '#96CDCD'
         common_height = 24
-        print("plan creation etc")
+
         self.var = tk.IntVar()
 
         self.merge_var = tk.IntVar()
@@ -54,7 +54,7 @@ class Biblio:
         self.save_var = tk.IntVar()
         
         self.mothermenu = tk.Frame(window, bg=BG_COLOR)
-        self.mothermenu.grid(row=0, column=0, sticky=tk.W + tk.E)
+        self.mothermenu.grid(row=0, column=0, sticky=tk.W)
 
         tk.Button(
             self.mothermenu,
@@ -74,11 +74,11 @@ class Biblio:
         display1.grid(row=1, column=0)
 
         display1plan = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1plan.grid(row=0, column=1, sticky=tk.W + tk.E)
+        display1plan.grid(row=0, column=1, rowspan=3, sticky=tk.W + tk.N)
 
         self.plan_listbox = tk.Listbox(
             display1plan,
-            height=common_height,
+            height=40,
             width=60,
             selectmode=tk.EXTENDED)
         self.plan_listbox.grid(row=0, column=0)
@@ -88,7 +88,7 @@ class Biblio:
         self.plan_listbox.bind('<<ListboxSelect>>', self.blocs_filter_plan)
 
         display1planmenu = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1planmenu.grid(row=1, column=1, sticky=tk.W + tk.E)
+        display1planmenu.grid(row=1, column=1, sticky=tk.W + tk.S)
 
         display1arrow = tk.Frame(display1planmenu, bg=BG_COLOR, bd=10)
         display1arrow.grid(row=0, column=0)
@@ -178,30 +178,30 @@ class Biblio:
             self.source_listbox.insert(tk.END, k[0])
         self.source_listbox.bind('<<ListboxSelect>>', self.blocs_filter_sources)
 
-        display1sourcemenu = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1sourcemenu.grid(row=1, column=2)
+        display1sourcemenu = tk.Frame(self.mothermenu, bg=BG_COLOR, bd=10)
+        display1sourcemenu.grid(row=0, column=3, padx=135)
 
         tk.Button(
             display1sourcemenu,
             text='Info',
             height=1,
-            width=9,
-            command=self.send_key).grid(row=0, column=0, sticky=tk.W + tk.E)
+            width=3,
+            command=self.send_key).grid(row=0, column=0, padx=2, sticky=tk.W + tk.E)
 
         tk.Button(
             display1sourcemenu,
             text='Remove',
             height=1,
-            width=7,
-            command=self.delete_article).grid(row=2, column=0, sticky=tk.W + tk.E)
+            width=6,
+            command=self.delete_article).grid(row=0, column=1, padx=2, sticky=tk.W + tk.E)
 
         tk.Button(
             display1sourcemenu,
             text='Import Zot',
             bg='#CDC9A5',
             height=1,
-            width=9,
-            command=self.add_to_blocs).grid(row=1, column=0, pady=5, sticky=tk.W + tk.E)
+            width=7,
+            command=self.add_to_blocs).grid(row=0, column=2, padx=2, sticky=tk.W + tk.E)
 
         display1blocs = tk.Frame(display1, bg=BG_COLOR, bd=10)
         display1blocs.grid(row=0, column=3)
@@ -214,8 +214,8 @@ class Biblio:
         self.blocs_listbox.grid(row=0, column=0)
         self.blocs_listbox.bind('<<ListboxSelect>>', self.read_blocs)
 
-        display1blocsoptions = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1blocsoptions.grid(row=1, column=3)
+        display1blocsoptions = tk.Frame(self.mothermenu, bg=BG_COLOR, bd=10)
+        display1blocsoptions.grid(row=0, column=5, sticky=tk.E)
 
         self.tag_but = tk.Button(
             display1blocsoptions,
@@ -246,8 +246,8 @@ class Biblio:
             font=('Calibri', 12))
         self.shell_text.grid(row=1, column=0, sticky=tk.S)
 
-        display1shelloptions = tk.Frame(display1, bg=BG_COLOR, bd=10)
-        display1shelloptions.grid(row=1, column=4, sticky=tk.W)
+        display1shelloptions = tk.Frame(self.mothermenu, bg=BG_COLOR, bd=10)
+        display1shelloptions.grid(row=0, column=4, sticky=tk.E)
 
         self.search_text = tk.Text(
             display1shelloptions,
@@ -263,16 +263,16 @@ class Biblio:
             command=self.blocs_filter_search)
         self.search_but.grid(row=0, column=1, padx=5, sticky=tk.E)
         
-        display2 = tk.Frame(window, bg=BG_COLOR)
-        display2.grid(row=2, column=0, sticky=tk.W + tk.E)
+        display2 = tk.Frame(display1, bg=BG_COLOR)
+        display2.grid(row=1, column=2, columnspan=3, sticky=tk.W + tk.E)
 
         display2note = tk.Frame(display2, bg=BG_COLOR, bd=10)
-        display2note.grid(row=0, column=0, sticky=tk.W)
+        display2note.grid(row=0, column=0, sticky=tk.W + tk.N)
 
         self.notes_text = tk.Text(
             display2note,
-            height=11,
-            width=150,
+            height=18,
+            width=115,
             wrap=tk.WORD,
             font=('Calibri',12))
         self.notes_text.grid(row=0, column=0)
@@ -302,7 +302,7 @@ class Biblio:
             height=1,
             width=10,
             command=lambda: self.save_var.set(1))
-        self.save_note_but.grid(row=2, column=0, padx=10)
+        self.save_note_but.grid(row=2, column=0)
 
         self.export_but = tk.Button(
             display2menu,
@@ -310,7 +310,7 @@ class Biblio:
             height=1,
             width=10,
             command=self.export_all)
-        self.export_but.grid(row=3, column=1, pady=5)
+        self.export_but.grid(row=3, column=0, pady=50)
 
         self.backup_but = tk.Button(
             display2menu,
@@ -318,8 +318,8 @@ class Biblio:
             height=1,
             width=10,
             command=self.backup)
-        self.backup_but.grid(row=4, column=1)
-        print("widget")
+        self.backup_but.grid(row=4, column=0)
+
     # Dictionary management
 
     def import_dict(self, path, name):
@@ -501,6 +501,7 @@ class Biblio:
                 for k in range(len(new)):
                     self.plan_listbox.insert(k, new[k])
                 self.plan_listbox.select_set(pos[0]+1)
+                self.plan_listbox.see(pos[0]+1)
         self.shell_text.delete("1.0", "end-1c")
         self.shell_label.configure(text='Shell :')
         
@@ -543,6 +544,8 @@ class Biblio:
         new = self.build_plan()
         for k in range(len(new)):
             self.plan_listbox.insert(k, new[k])
+
+        self.plan_listbox.see(pos)
 
     def edit_plan(self):
         pos = self.plan_listbox.curselection()[0]
