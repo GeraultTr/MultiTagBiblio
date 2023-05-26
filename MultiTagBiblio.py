@@ -18,6 +18,7 @@ if not os.path.exists(p):
 
 import tkinter as tk
 from tkinter.filedialog import askdirectory
+from PIL import Image, ImageTk
 import pickle
 import sqlite3
 from tkhtmlview import HTMLLabel
@@ -1148,6 +1149,31 @@ class ArticleInfo:
                 + abstract)
 
 
+class SplashScreen:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.wm_attributes('-transparentcolor', self.root['bg'])
+        self.root.wm_attributes("-disabled", True)
+        self.root.wm_attributes("-topmost", True)
+        self.root.overrideredirect(True)
+        self.root.eval('tk::PlaceWindow . center')
+
+        image = Image.open("bin\\MTB_logo.ico")
+        test = ImageTk.PhotoImage(image)
+
+        label = tk.Label(self.root, text="Multi\nTag\nBiblio", fg="white", font=('Arial', 40), image=test, compound="right")
+
+        # Position image
+        label.pack()
+
+        self.root.after(3000, self.close_splash)
+
+        tk.mainloop()
+
+    def close_splash(self):
+        self.root.destroy()
+
+
 def init_dict():
     cwd = os.getcwd()
     p = cwd + "\\Storage"
@@ -1202,6 +1228,7 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 BG_COLOR = '#96CDCD'
 
+SplashScreen()
 init_dict()
 win = tk.Tk()
 win.title('Multi Tag Biblio')
