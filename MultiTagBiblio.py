@@ -1159,14 +1159,23 @@ class SplashScreen:
         self.root.eval('tk::PlaceWindow . center')
 
         image = Image.open("bin\\MTB_logo.ico")
+        image.thumbnail((400, 400), Image.Resampling.LANCZOS)
         test = ImageTk.PhotoImage(image)
 
-        label = tk.Label(self.root, text="Multi\nTag\nBiblio", fg="white", font=('Arial', 40), image=test, compound="right")
+        label = tk.Label(self.root, text="Multi\nTag\nBiblio", fg="white", font=('Arial', 60), image=test, compound="right")
 
         # Position image
         label.pack()
 
-        self.root.after(3000, self.close_splash)
+        w = label.winfo_reqwidth()
+        h = label.winfo_reqheight()
+        ws = self.root.winfo_screenwidth()
+        hs = self.root.winfo_screenheight()
+        x = (ws / 2) - (w / 2)
+        y = (hs / 2) - (h / 2)
+        self.root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+        self.root.after(2500, self.close_splash)
 
         tk.mainloop()
 
