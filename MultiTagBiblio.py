@@ -1172,7 +1172,7 @@ def init_dict():
     
     # Create windows system shortcuts
     startup = "C:\\Users\\" + os.getlogin() + "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"
-    target = cwd + "\\MultiTagBiblio.bat"
+    target = cwd + "\\MultiTagBiblio-GUI.vbs"
     if not os.path.exists(startup + "\\MultiTagBiblio.lnk"):
         ask_user = input("Do you want to create a shortcut ? (y/n) : ")
         if ask_user == "y":
